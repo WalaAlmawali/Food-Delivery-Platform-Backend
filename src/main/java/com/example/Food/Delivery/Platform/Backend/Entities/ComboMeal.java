@@ -1,6 +1,9 @@
 package com.example.Food.Delivery.Platform.Backend.Entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -13,11 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 public class ComboMeal extends BaseEntity{
+    @NotBlank
     private String comboName;
 
     @Column(length = 1000)
     private String description;
-
+    @PositiveOrZero
+    @DecimalMin("0.0")
     private Double totalPrice;
 
     @Builder.Default
