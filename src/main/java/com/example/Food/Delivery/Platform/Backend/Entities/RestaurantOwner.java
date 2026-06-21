@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Table(name = "restaurant_owners")
 @Data
@@ -30,12 +32,12 @@ public class RestaurantOwner extends BaseEntity {
     @NotBlank
     private String businessLicenseCode;
 
-   /* @OneToMany(
+    @OneToMany(
             mappedBy = "restaurantOwner",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Restaurant> restaurants;*/
+    private List<Restaurant> restaurants;
 }

@@ -4,56 +4,51 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @Entity
-@Table(name = "customers")
+@Table(name = "delivery_drivers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Customer extends BaseEntity {
-
+public class DeliveryDriver extends BaseEntity {
     @NotBlank
     private String firstName;
     @NotBlank
     private String lastName;
 
-    @NotBlank
-    @Email
     @Column(unique = true)
+    @Email
+    @NotBlank
     private String email;
     @Pattern(regexp = "^\\+?[0-9]{8,15}$")
     private String phone;
 
     private String passwordHash;
 
-    @Builder.Default
-    private Integer loyaltyPoints = 0;
-
     @Column(unique = true)
-    private String customerCode;
+    private String driverCode;
 
-   @OneToMany(
-            mappedBy = "customer",
+    @NotBlank
+    private String vehicleType;
+    @NotBlank
+    private String vehiclePlate;
+    private Double currentLat;
+
+    private Double currentLng;
+
+    @Builder.Default
+    private Boolean isOnline = false;
+
+    /*@OneToMany(
+            mappedBy = "deliveryDriver",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    private List<CustomerAddress> addresses;
-
-    @OneToMany(
-            mappedBy = "customer",
-            fetch = FetchType.LAZY
-    )
-    private List<Order> orders;
-
-    @OneToMany(
-            mappedBy = "customer",
-            fetch = FetchType.LAZY
-    )
-    private List<Review> reviews;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Delivery> deliveries;*/
 }
-

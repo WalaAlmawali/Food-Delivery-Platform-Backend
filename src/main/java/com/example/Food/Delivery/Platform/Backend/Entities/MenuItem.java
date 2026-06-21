@@ -40,14 +40,13 @@ public class MenuItem extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Restaurant restaurant;
-    /* @OneToMany(
+     @OneToMany(
              mappedBy = "menuItem",
              fetch = FetchType.LAZY
      )
      @ToString.Exclude
      @EqualsAndHashCode.Exclude
      private List<OrderItem> orderItems;
- */
     @ManyToMany(mappedBy = "menuItems")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
