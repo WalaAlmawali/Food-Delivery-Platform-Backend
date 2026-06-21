@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Entity
 @Table(name = "customers")
 @Data
@@ -14,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class Customer extends BaseEntity {
+
     @NotBlank
     private String firstName;
     @NotBlank
@@ -34,13 +37,14 @@ public class Customer extends BaseEntity {
     @Column(unique = true)
     private String customerCode;
 
-   /* @OneToMany(
+   @OneToMany(
             mappedBy = "customer",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private List<CustomerAddress> addresses;
 
+   /*
     @OneToMany(
             mappedBy = "customer",
             fetch = FetchType.LAZY
