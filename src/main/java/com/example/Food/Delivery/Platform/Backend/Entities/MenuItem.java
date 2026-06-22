@@ -47,6 +47,7 @@ public class MenuItem extends BaseEntity {
      @ToString.Exclude
      @EqualsAndHashCode.Exclude
      private List<OrderItem> orderItems;
+
     @ManyToMany(mappedBy = "menuItems")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
