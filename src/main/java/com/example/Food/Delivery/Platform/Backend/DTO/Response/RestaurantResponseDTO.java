@@ -10,7 +10,6 @@ public class RestaurantResponseDTO {
     private String cuisineType;
     private double deliveryFee;
     private boolean acceptingOrders;
-    private RestaurantSummaryDTO summary;
 
     public static RestaurantResponseDTO fromEntity(Restaurant r) {
         RestaurantResponseDTO dto = new RestaurantResponseDTO();
@@ -19,7 +18,6 @@ public class RestaurantResponseDTO {
         dto.cuisineType = r.getCuisineType();
         dto.deliveryFee = r.getDeliveryFee();
         dto.acceptingOrders = r.getAcceptingOrders();
-        dto.summary = RestaurantSummaryDTO.fromEntity(r);
         return dto;
     }
 }

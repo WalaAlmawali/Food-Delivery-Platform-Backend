@@ -25,7 +25,6 @@ public class Review extends BaseEntity{
     @Column(length = 1000)
     private String comment;
 
-    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

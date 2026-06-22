@@ -2,8 +2,7 @@ package com.example.Food.Delivery.Platform.Backend.Entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,24 +14,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+
 public class MenuItem extends BaseEntity {
+
     private String name;
-
-    @Column(length = 1000)
     private String description;
-
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double price;
-
-    @Builder.Default
     private Boolean isAvailable = true;
-
-    @Builder.Default
     private Boolean isVegetarian = false;
-
-    @PositiveOrZero
     private Integer calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,6 +29,7 @@ public class MenuItem extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Restaurant restaurant;
+
      @OneToMany(
              mappedBy = "menuItem",
              fetch = FetchType.LAZY
