@@ -10,12 +10,13 @@ public class RestaurantSummaryDTO {
     private String name;
     private String cuisineType;
 
-    public static RestaurantSummaryDTO fromEntity(Restaurant restaurant) {
+    public static RestaurantSummaryDTO fromEntity(Restaurant r) {
         RestaurantSummaryDTO dto = new RestaurantSummaryDTO();
-        dto.id = restaurant.getId();
-        dto.name = restaurant.getName();
-        dto.cuisineType = restaurant.getCuisineType();
+        dto.id = r.getId();
+        dto.name = r.getName();
+        dto.cuisineType = r.getCuisineType();
         return dto;
     }
 
 }
+
