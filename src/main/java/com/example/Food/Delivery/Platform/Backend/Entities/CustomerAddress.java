@@ -11,16 +11,11 @@ import lombok.experimental.SuperBuilder;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class CustomerAddress extends BaseEntity {
-    @NotBlank
-    private String street;
-    @NotBlank
-    private String city;
-    @NotBlank
-    private String building;
 
-    @Builder.Default
+public class CustomerAddress extends BaseEntity {
+    private String street;
+    private String city;
+    private String building;
     private Boolean isDefault = false;
 
     @ManyToOne(fetch = FetchType.LAZY)

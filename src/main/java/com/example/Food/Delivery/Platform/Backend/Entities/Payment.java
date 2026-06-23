@@ -18,19 +18,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @SuperBuilder
 public class Payment extends BaseEntity{
-    @Enumerated(EnumType.STRING)
+
     private PaymentMethod paymentMethod;
-
-    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
-
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double amount;
-
-    @NotBlank
     private String transactionRef;
-
     private LocalDateTime processedAt;
 
     @OneToOne(fetch = FetchType.LAZY)

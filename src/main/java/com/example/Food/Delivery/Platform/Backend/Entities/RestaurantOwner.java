@@ -14,22 +14,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class RestaurantOwner extends BaseEntity {
 
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
-    @NotBlank
-    @Email
-    @Column(unique = true, nullable = false)
     private String email;
-    @Pattern(regexp = "^\\+?[0-9]{8,15}$")
     private String phone;
-
     private String passwordHash;
-    @NotBlank
     private String businessLicenseCode;
 
     @OneToMany(

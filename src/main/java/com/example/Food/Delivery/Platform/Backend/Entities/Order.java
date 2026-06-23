@@ -17,28 +17,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 
 public class Order extends BaseEntity{
-    @Column(unique = true)
     private String orderCode;
 
     private LocalDateTime orderDate;
-    @Pattern(regexp = "PENDING|PREPARING|READY| OUT_FOR_DELIVERY| DELIVERED|CANCELLED")
-    @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
     private Double subtotal;
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double deliveryFee;
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double discountAmount;
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double totalAmount;
-    @NotBlank
     private String deliveryNotes;
 
     @ManyToOne(fetch = FetchType.LAZY)

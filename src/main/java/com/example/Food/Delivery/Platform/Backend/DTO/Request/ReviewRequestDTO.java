@@ -4,12 +4,15 @@ import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
 import com.example.Food.Delivery.Platform.Backend.Entities.Restaurant;
 import com.example.Food.Delivery.Platform.Backend.Entities.Review;
 import com.example.Food.Delivery.Platform.Backend.Enums.ReviewTargetType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReviewRequestDTO {
     @NotNull
     private Customer customer;
@@ -27,15 +30,15 @@ public class ReviewRequestDTO {
     @Pattern(regexp = "RESTAURANT|DRIVER")
     private ReviewTargetType targetType;
 
-    public Review toEntity() {
+    public static Review toEntity(ReviewRequestDTO dto) {
 
         Review review = new Review();
 
-        review.setRating(rating);
-        review.setComment(comment);
-        review.setCustomer(customer);
-        review.setRestaurant(restaurant);
-        review.setTargetType(targetType);
+        review.setRating(dto.getRating());
+        review.setComment(dto.getComment());
+        review.setCustomer(dto.getCustomer());
+        review.setRestaurant(dto.getRestaurant());
+        review.setTargetType(dto.getTargetType());
 
         return review;
     }

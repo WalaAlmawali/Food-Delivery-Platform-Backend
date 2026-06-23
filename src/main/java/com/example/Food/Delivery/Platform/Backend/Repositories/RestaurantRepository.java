@@ -18,7 +18,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
     @Query("SELECT r FROM Restaurant r WHERE r.deliveryFee <= :fee AND r.isActive = true")
     List<Restaurant> findByDeliveryFeeLessThanEqual(@Param("fee") double fee);
 
-    @Query("SELECT r FROM Restaurant r WHERE r.owner.id = :ownerId AND r.isActive = true")
+    @Query("SELECT r FROM Restaurant r WHERE r.restaurantOwner = :ownerId AND r.isActive = true")
     List<Restaurant> findByOwnerId(@Param("ownerId") Integer ownerId);
 
     @Query("SELECT r FROM Restaurant r " +

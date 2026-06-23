@@ -15,14 +15,8 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class Review extends BaseEntity{
 
-    @Enumerated(EnumType.STRING)
     private ReviewTargetType targetType;
-
-
     private Integer rating;
-
-
-    @Column(length = 1000)
     private String comment;
 
 

@@ -12,20 +12,10 @@ import lombok.experimental.SuperBuilder;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class OrderItem extends BaseEntity {
-    @PositiveOrZero
     private Integer quantity;
-
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double unitPrice;
-
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double totalPrice;
-
-    @NotBlank
     private String specialInstructions;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -2,7 +2,9 @@ package com.example.Food.Delivery.Platform.Backend.DTO.Response;
 
 import com.example.Food.Delivery.Platform.Backend.DTO.Summary.CustomerSummaryDTO;
 import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
+import lombok.Data;
 
+@Data
 public class CustomerResponseDTO {
 
     private Integer id;

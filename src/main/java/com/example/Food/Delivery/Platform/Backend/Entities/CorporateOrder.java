@@ -17,20 +17,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CorporateOrder extends BaseEntity{
-    @Column(unique = true)
+public class CorporateOrder extends BaseEntity {
     private String corporateCode;
-    @NotBlank
     private String companyName;
-    @NotBlank
     private String costCenter;
-
     private LocalDateTime orderDate;
-
-    @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double totalAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -17,23 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 public class Restaurant extends BaseEntity{
+
     private String name;
-
-    @Column(length = 1000)
     private String description;
-    @NotBlank
     private String cuisineType;
-    @NotBlank
     private String openingTime;
-    @NotBlank
     private String closingTime;
-    @Min(1)
     private Double minOrderAmount;
-    @PositiveOrZero
-    @DecimalMin("0.0")
     private Double deliveryFee;
-
-    @Builder.Default
     private Boolean acceptingOrders = true;
 
     @ManyToOne(fetch = FetchType.LAZY)

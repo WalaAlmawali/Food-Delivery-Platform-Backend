@@ -1,12 +1,15 @@
 package com.example.Food.Delivery.Platform.Backend.DTO.Request;
 
 import com.example.Food.Delivery.Platform.Backend.Entities.MenuItem;
-import com.example.Food.Delivery.Platform.Backend.Entities.Order;
 import com.example.Food.Delivery.Platform.Backend.Entities.OrderItem;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItemDTO {
     @NotNull
     private MenuItem Item;
@@ -17,11 +20,11 @@ public class OrderItemDTO {
     @Min(1)
     private int quantity;
 
-    public OrderItem toEntity(){
+    public static OrderItem toEntity(OrderItemDTO dto){
         OrderItem orderItem = new OrderItem();
-        orderItem.setMenuItem(Item);
-        orderItem.setUnitPrice(price);
-        orderItem.setQuantity(quantity);
+        orderItem.setMenuItem(dto.getItem());
+        orderItem.setUnitPrice(dto.getPrice());
+        orderItem.setQuantity(dto.getQuantity());
 
         return orderItem;
     }

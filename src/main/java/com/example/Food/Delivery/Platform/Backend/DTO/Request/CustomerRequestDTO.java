@@ -3,9 +3,13 @@ package com.example.Food.Delivery.Platform.Backend.DTO.Request;
 import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
 import com.example.Food.Delivery.Platform.Backend.Utils.HelperUtils;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerRequestDTO {
 
     @NotBlank
@@ -24,14 +28,14 @@ public class CustomerRequestDTO {
     private String passwordHash;
 
 
-    public Customer toEntity(){
+    public static Customer toEntity(CustomerRequestDTO dto){
         Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setEmail(email);
-        customer.setPhone(phone);
+        customer.setFirstName(dto.getFirstName());
+        customer.setLastName(dto.getLastName());
+        customer.setEmail(dto.getEmail());
+        customer.setPhone(dto.getPhone());
         customer.setCustomerCode(HelperUtils.generateCode("CUST"));
-        customer.setPasswordHash(passwordHash);
+        customer.setPasswordHash(dto.getPasswordHash());
         return customer;
     }
 

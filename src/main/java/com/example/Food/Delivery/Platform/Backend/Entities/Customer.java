@@ -14,27 +14,15 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class Customer extends BaseEntity {
 
-    @NotBlank
     private String firstName;
-    @NotBlank
     private String lastName;
 
-    @NotBlank
-    @Email
-    @Column(unique = true)
     private String email;
-    @Pattern(regexp = "^\\+?[0-9]{8,15}$")
     private String phone;
-
     private String passwordHash;
-
-    @Builder.Default
     private Integer loyaltyPoints = 0;
-
-    @Column(unique = true)
     private String customerCode;
 
    @OneToMany(

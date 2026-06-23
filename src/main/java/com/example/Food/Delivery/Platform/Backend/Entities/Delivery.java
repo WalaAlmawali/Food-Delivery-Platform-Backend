@@ -13,20 +13,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class Delivery extends BaseEntity{
 
-    @NotBlank
-    @Column(unique = true)
     private String trackingCode;
-
-    @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
-
     private LocalDateTime assignedAt;
-
     private LocalDateTime pickedUpAt;
-
     private LocalDateTime deliveredAt;
 
     @OneToOne(fetch = FetchType.LAZY)

@@ -19,9 +19,14 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE o.orderDate BETWEEN :start AND :end AND o.isActive = true")
     List<Order> findByOrderDateBetween(@Param("start") Date start, @Param("end") Date end);
 
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.restaurant.id = :restaurantId AND o.status = OrderStatus.COMPLETED AND o.isActive = true")
-    Long countCompletedOrdersByRestaurant(@Param("restaurantId") Integer restaurantId);
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.restaurant.id = :restaurantId AND o.status = :status AND o.isActive = true")
+    Long countCompletedOrdersByRestaurant(
+            @Param("restaurantId") Integer restaurantId,
+            @Param("status") OrderStatus status
+    );
+    /*@Query("SELECT COUNT(o) FROM Order o WHERE o.restaurant.id = :restaurantId AND o.status = com.example.Food.Delivery.Platform.Backend.Enums.OrderStatus.COMPLETED AND o.isActive = true")
+    Long countCompletedOrdersByRestaurant(@Param("restaurantId") Integer restaurantId);*/
 
-    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status = OrderStatus.DELIVERED AND FUNCTION('DATE', o.orderDate) = :date AND o.isActive = true")
-    Double sumDeliveredOrdersByDate(@Param("date") Date date);
+    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.status = :status AND FUNCTION('DATE', o.orderDate) = :date AND o.isActive = true")
+    Double sumDeliveredOrdersByDate(@Param("date") Date date, @Param("status")OrderStatus status);
 }

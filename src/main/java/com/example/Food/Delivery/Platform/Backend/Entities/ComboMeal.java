@@ -14,18 +14,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class ComboMeal extends BaseEntity{
-    @NotBlank
+
     private String comboName;
 
-    @Column(length = 1000)
     private String description;
-    @PositiveOrZero
-    @DecimalMin("0.0")
+
     private Double totalPrice;
 
-    @Builder.Default
     private Boolean isAvailable = true;
 
     @ManyToOne(fetch = FetchType.LAZY)

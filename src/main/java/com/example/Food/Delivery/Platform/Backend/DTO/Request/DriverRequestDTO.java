@@ -3,9 +3,13 @@ package com.example.Food.Delivery.Platform.Backend.DTO.Request;
 import com.example.Food.Delivery.Platform.Backend.Entities.DeliveryDriver;
 import com.example.Food.Delivery.Platform.Backend.Utils.HelperUtils;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DriverRequestDTO {
 
     @NotNull
@@ -24,12 +28,12 @@ public class DriverRequestDTO {
     @Pattern(regexp = "^\\+?[0-9]{8,15}$")
     private String phone;
 
-    public DeliveryDriver toEntity(){
+    public static DeliveryDriver toEntity(DriverRequestDTO dto){
         DeliveryDriver driver = new DeliveryDriver();
-        driver.setFirstName(firstName);
-        driver.setLastName(lastName);
-        driver.setEmail(email);
-        driver.setPhone(phone);
+        driver.setFirstName(dto.getFirstName());
+        driver.setLastName(dto.getLastName());
+        driver.setEmail(dto.getEmail());
+        driver.setPhone(dto.getPhone());
         driver.setDriverCode(HelperUtils.generateCode("Driver"));
         return driver;
     }
