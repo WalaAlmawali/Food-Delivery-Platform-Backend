@@ -18,7 +18,7 @@ public class CustomerAddressRequestDTO {
     @NotNull
     private Customer customer;
 
-    public static CustomerAddress  toEntity(CustomerAddressRequestDTO dto){
+    public static CustomerAddress toEntity(CustomerAddressRequestDTO dto){
         CustomerAddress customerAddress = new CustomerAddress();
         customerAddress.setCustomer(dto.getCustomer());
         customerAddress.setCity(dto.getCity());
