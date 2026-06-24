@@ -10,7 +10,7 @@ public class CustomerAddressResponseDTO {
     private String street;
     private String city;
     private String building;
-    private Customer customer;
+    private Integer customerId;
 
 
     public static CustomerAddressResponseDTO fromEntity(CustomerAddress address){
@@ -18,7 +18,7 @@ public class CustomerAddressResponseDTO {
         dto.street = address.getStreet();
         dto.city = address.getCity();
         dto.building = address.getBuilding();
-        dto.customer = address.getCustomer();
+        dto.customerId = address.getCustomer().getId();
         return dto;
     }
 }

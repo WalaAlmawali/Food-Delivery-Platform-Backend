@@ -12,6 +12,7 @@ public class CustomerResponseDTO {
     private String lastName;
     private String email;
     private String phone;
+    private Integer loyaltyPoints;
 
     public static CustomerResponseDTO fromEntity(Customer c) {
         CustomerResponseDTO dto = new CustomerResponseDTO();
@@ -20,6 +21,7 @@ public class CustomerResponseDTO {
         dto.lastName = c.getLastName();
         dto.email = c.getEmail();
         dto.phone = c.getPhone();
+        dto.loyaltyPoints=c.getLoyaltyPoints();
 
         return dto;
     }

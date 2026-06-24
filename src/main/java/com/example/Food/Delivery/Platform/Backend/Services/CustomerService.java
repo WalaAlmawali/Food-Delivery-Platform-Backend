@@ -4,21 +4,29 @@ import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerAddressReq
 import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerRequestDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerAddressResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerResponseDTO;
+import com.example.Food.Delivery.Platform.Backend.DTO.Response.OrderResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
 import com.example.Food.Delivery.Platform.Backend.Entities.CustomerAddress;
+import com.example.Food.Delivery.Platform.Backend.Entities.Order;
 import com.example.Food.Delivery.Platform.Backend.Exceptions.ResourceNotFoundException;
 import com.example.Food.Delivery.Platform.Backend.Repositories.CustomerAddressRepository;
 import com.example.Food.Delivery.Platform.Backend.Repositories.CustomerRepository;
+import com.example.Food.Delivery.Platform.Backend.Repositories.OrderRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerAddressRepository customerAddressRepository;
+    private final OrderRepository orderRepository;
 
-    public CustomerService(CustomerRepository repository, CustomerAddressRepository customerAddressRepository) {
-        this.customerRepository = repository;
+    public CustomerService(CustomerRepository customerRepository, CustomerAddressRepository customerAddressRepository, OrderRepository orderRepository) {
+        this.customerRepository = customerRepository;
         this.customerAddressRepository = customerAddressRepository;
+        this.orderRepository = orderRepository;
     }
 
     public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
@@ -75,7 +83,7 @@ public class CustomerService {
 
     }
 
-    public String deactivateCustomer(Integer customerId){
+    public String deactivateCustomer(Integer customerId) {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
@@ -87,4 +95,63 @@ public class CustomerService {
 
     }
 
+    public List<CustomerResponseDTO> getAllCustomers() {
+        List<Customer> customerList = customerRepository.findAll();
+        List<CustomerResponseDTO> customerResponseDTOListList = new ArrayList<>();
+
+
+        for (Customer customer : customerList) {
+            customerResponseDTOListList.add(CustomerResponseDTO.fromEntity(customer));
+        }
+        return customerResponseDTOListList;
+    }
+
+    public CustomerResponseDTO getCustomerById(Integer customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
+        return CustomerResponseDTO.fromEntity(customer);
+    }
+
+    public CustomerResponseDTO findByEmail(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
+
+        return CustomerResponseDTO.fromEntity(customer);
+    }
+
+    public List<CustomerAddressResponseDTO> getAllCustomerAddress(Integer customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
+        List<CustomerAddress> customerAddresses = customerAddressRepository.findAllByCustomerId(customerId);
+        List<CustomerAddressResponseDTO> customerAddressResponseDTOS = new ArrayList<>();
+
+        for(CustomerAddress address: customerAddresses){
+            customerAddressResponseDTOS.add(CustomerAddressResponseDTO.fromEntity(address));
+        }
+
+        return customerAddressResponseDTOS;
+    }
+
+    public String deleteAddress(Integer id){
+        CustomerAddress address = customerAddressRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Address not exist"));
+        address.setIsActive(false);
+        customerAddressRepository.save(address);
+
+        return "Address was deleted successfully";
+    }
+
+    public List<OrderResponseDTO> getAllCustomerOrders(Integer customerId){
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
+
+        List<Order> customerOrdersList = orderRepository.findByCustomerId(customerId);
+        List<OrderResponseDTO> customerOrderDTO = new ArrayList<>();
+
+        for(Order order : customerOrdersList){
+            customerOrderDTO.add(OrderResponseDTO.fromEntity(order));
+        }
+            return customerOrderDTO;
+    }
 }
