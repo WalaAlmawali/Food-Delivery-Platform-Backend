@@ -38,5 +38,9 @@ public class CustomerService {
 
     }
 
+    public void addAddress(Integer customerId, CustomerAddressRequestDTO address){
+
+    }
+
 
 }
