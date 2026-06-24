@@ -13,7 +13,7 @@ public class CustomerAddressResponseDTO {
     private Customer customer;
 
 
-    public CustomerAddressResponseDTO fromEntity(CustomerAddress address){
+    public static CustomerAddressResponseDTO fromEntity(CustomerAddress address){
         CustomerAddressResponseDTO dto = new CustomerAddressResponseDTO();
         dto.street = address.getStreet();
         dto.city = address.getCity();
