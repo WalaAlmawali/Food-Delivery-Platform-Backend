@@ -195,9 +195,10 @@ public class RestaurantService {
         return ComboMealResponseDTO.fromEntity(meal);
     }
 
-    public RestaurantOwnerResponseDTO createOwner(RestaurantOwnerRequestDTO dto){
+    public RestaurantOwnerResponseDTO newOwner(RestaurantOwnerRequestDTO dto){
         RestaurantOwner owner = RestaurantOwnerRequestDTO.toEntity(dto);
          ownerRepository.save(owner);
+
          return RestaurantOwnerResponseDTO.fromEntity(owner);
     }
 
