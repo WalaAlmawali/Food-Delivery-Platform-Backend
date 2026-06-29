@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItemDTO {
+public class OrderItemRequestDTO {
     @NotNull
     private MenuItem Item;
 
@@ -20,8 +20,10 @@ public class OrderItemDTO {
     @Min(1)
     private int quantity;
 
-    public static OrderItem toEntity(OrderItemDTO dto){
+    public static OrderItem toEntity(OrderItemRequestDTO dto){
+
         OrderItem orderItem = new OrderItem();
+
         orderItem.setMenuItem(dto.getItem());
         orderItem.setUnitPrice(dto.getPrice());
         orderItem.setQuantity(dto.getQuantity());

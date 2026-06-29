@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 
 public class Order extends BaseEntity{
+
     private String orderCode;
 
     private LocalDateTime orderDate;

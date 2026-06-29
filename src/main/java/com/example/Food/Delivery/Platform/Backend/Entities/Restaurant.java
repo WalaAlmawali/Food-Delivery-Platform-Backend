@@ -26,6 +26,8 @@ public class Restaurant extends BaseEntity{
     private Double minOrderAmount;
     private Double deliveryFee;
     private Boolean acceptingOrders = true;
+    private Double latitude;
+    private Double longitude;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")

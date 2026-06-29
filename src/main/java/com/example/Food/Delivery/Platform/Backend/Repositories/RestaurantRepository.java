@@ -1,5 +1,6 @@
 package com.example.Food.Delivery.Platform.Backend.Repositories;
 
+import com.example.Food.Delivery.Platform.Backend.Entities.MenuItem;
 import com.example.Food.Delivery.Platform.Backend.Entities.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
             "WHERE LOWER(r.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "AND r.isActive = true")
     List<Restaurant> searchByName(@Param("keyword") String keyword);
+
+
+
 }

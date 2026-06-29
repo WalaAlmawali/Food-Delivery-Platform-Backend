@@ -3,13 +3,20 @@ package com.example.Food.Delivery.Platform.Backend.Controllers;
 import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerAddressRequestDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerRequestDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerAddressResponseDTO;
+import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerPatchDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.OrderResponseDTO;
+import com.example.Food.Delivery.Platform.Backend.Enums.OrderStatus;
 import com.example.Food.Delivery.Platform.Backend.Services.CustomerService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -73,9 +80,37 @@ public class CustomerController {
         return service.deleteAddress(addressId);
   }
 
-  @GetMapping("/{id}/orders")
+  @GetMapping("/{id}/orders/all")
     public List<OrderResponseDTO> getAllCustomerOrders(@PathVariable Integer id){
        return service.getAllCustomerOrders(id);
   }
+
+    @GetMapping("/search")
+    public Page<CustomerResponseDTO> searchCustomers(
+            @RequestParam(required = false, defaultValue = "") String name,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return service.searchCustomersByName(name, pageable);
+    }
+
+    @GetMapping("/{id}/orders")
+    public Page<OrderResponseDTO> getCustomerOrders(
+            @PathVariable Long id,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) LocalDate from,
+            @RequestParam(required = false) LocalDate to,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return service.getCustomerOrders(id, status, from, to, pageable);
+    }
+
+    @PatchMapping("/{id}")
+    public CustomerResponseDTO patchCustomer(
+            @PathVariable Integer id,
+            @RequestBody CustomerPatchDTO dto
+    ) {
+        return service.patchCustomer(id, dto);
+    }
+
 }
 

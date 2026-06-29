@@ -1,6 +1,9 @@
 package com.example.Food.Delivery.Platform.Backend.Repositories;
 
 import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +27,18 @@ List<Customer> findByCreatedDateBetween(
 
 @Query(value = "SELECT * FROM customer c WHERE c.is_active = true " + "ORDER BY c.loyalty_points DESC LIMIT :limit", nativeQuery = true)
 List<Customer> findTopCustomersByLoyaltyPoints(@Param("limit") int limit);
+
+    @Query("""
+    SELECT c
+    FROM Customer c
+    ORDER BY c.loyaltyPoints DESC
+""")
+    List<Customer> findTopCustomers(Pageable pageable);
+
+    @Query("""
+SELECT c FROM Customer c
+WHERE LOWER(c.firstName) LIKE LOWER(CONCAT('%', :name, '%'))
+   OR LOWER(c.lastName) LIKE LOWER(CONCAT('%', :name, '%'))
+""")
+    Page<Customer> searchByName(@Param("name") String name, Pageable pageable);
 }

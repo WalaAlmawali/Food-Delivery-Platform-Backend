@@ -23,7 +23,7 @@ public class OrderRequestDTO {
     private Restaurant restaurant;
 
     @NotEmpty
-    private List<@Valid OrderItemDTO> items;
+    private List<@Valid OrderItemRequestDTO> items;
 
     @Pattern(regexp = "PENDING|PREPARING|READY|OUT_FOR_DELIVERY|DELIVERED|CANCELLED")
     private OrderStatus status;

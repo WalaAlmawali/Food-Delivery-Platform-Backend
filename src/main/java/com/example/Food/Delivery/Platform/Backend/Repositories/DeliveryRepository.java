@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+
 public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
 
     @Query("SELECT d FROM Delivery d WHERE d.deliveryDriver.id = :driverId AND d.status = :status AND d.isActive = true")
@@ -21,8 +22,11 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
     List<Delivery> findActiveDeliveryByDriver(@Param("driverId") Integer driverId,@Param("status") DeliveryStatus status);
 
     @Query("SELECT d FROM Delivery d WHERE d.status = :status AND d.isActive = true")
-    List<Delivery> findAllByStatus(@Param("status") OrderStatus status);
+    List<Delivery> findAllByStatus(@Param("status") DeliveryStatus status);
+
 
     @Query("SELECT COUNT(d) FROM Delivery d WHERE d.deliveryDriver.id = :driverId AND d.status = :status AND d.isActive = true")
     Long countCompletedDeliveriesByDriver(@Param("driverId") Integer driverId, @Param("status") DeliveryStatus status);
+
+
 }
