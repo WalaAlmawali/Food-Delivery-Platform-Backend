@@ -11,13 +11,20 @@ import com.example.Food.Delivery.Platform.Backend.Exceptions.InvalidRequestExcep
 import com.example.Food.Delivery.Platform.Backend.Exceptions.ResourceNotFoundException;
 import com.example.Food.Delivery.Platform.Backend.Repositories.*;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.hibernate.query.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
@@ -26,14 +33,6 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CorporateOrderRepository corporateOrderRepository;
 
-    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository, RestaurantRepository restaurantRepository, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, CorporateOrderRepository corporateOrderRepository) {
-        this.orderRepository = orderRepository;
-        this.customerRepository = customerRepository;
-        this.restaurantRepository = restaurantRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.corporateOrderRepository = corporateOrderRepository;
-    }
 
     public OrderResponseDTO createOrder(Integer customerId, Integer restaurantId, List<OrderItemRequestDTO> items) {
 
@@ -100,7 +99,7 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(order);
     }
 
-    public OrderResponseDTO addItemToOrder(Integer orderId , OrderItemRequestDTO dto){
+    public OrderResponseDTO addItemToOrder(Integer orderId, OrderItemRequestDTO dto) {
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
@@ -274,10 +273,10 @@ public class OrderService {
     public OrderResponseDTO createOrder(Integer customerId, Integer restaurantId) {
 
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(()-> new ResourceNotFoundException("Customer not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not exist"));
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(()-> new ResourceNotFoundException("Restaurant noe xxist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant noe xxist"));
 
 
         if (!(restaurant.getAcceptingOrders())) {
@@ -295,7 +294,7 @@ public class OrderService {
         return OrderResponseDTO.fromEntity(order);
     }
 
-    public OrderResponseDTO confirmOrder(Integer orderId){
+    public OrderResponseDTO confirmOrder(Integer orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order does not exist"));
 
@@ -303,18 +302,51 @@ public class OrderService {
         orderRepository.save(order);
         return OrderResponseDTO.fromEntity(order);
     }
-    public OrderResponseDTO getOrder(Integer orderId){
+
+    public OrderResponseDTO getOrder(Integer orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(()-> new ResourceNotFoundException("Order noe exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order noe exist"));
         return OrderResponseDTO.fromEntity(order);
     }
-    public  List<OrderResponseDTO> findByRestaurantIdAndStatus(Integer restaurantId, OrderStatus status){
-        List<Order> orderList = orderRepository.findByRestaurantIdAndStatus(restaurantId,status);
+
+    public List<OrderResponseDTO> findByRestaurantIdAndStatus(Integer restaurantId, OrderStatus status) {
+        List<Order> orderList = orderRepository.findByRestaurantIdAndStatus(restaurantId, status);
         List<OrderResponseDTO> dtoList = new ArrayList<>();
 
-        for(Order order : orderList){
+        for (Order order : orderList) {
             dtoList.add(OrderResponseDTO.fromEntity(order));
         }
         return dtoList;
     }
+
+
+    @Transactional
+    public OrderResponseDTO reorder(Integer orderId) {
+
+        Order oldOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        Order newOrder = new Order();
+        newOrder.setCustomer(oldOrder.getCustomer());
+        newOrder.setRestaurant(oldOrder.getRestaurant());
+        newOrder.setStatus(OrderStatus.PENDING);
+        newOrder.setOrderDate(LocalDateTime.now());
+
+        List<OrderItem> items = oldOrder.getOrderItems().stream()
+                .map(i -> {
+                    OrderItem item = new OrderItem();
+                    item.setMenuItem(i.getMenuItem());
+                    item.setQuantity(i.getQuantity());
+                    item.setUnitPrice(i.getUnitPrice());
+                    item.setOrder(newOrder);
+                    return item;
+                }).toList();
+
+        newOrder.setOrderItems(items);
+        orderRepository.save(newOrder);
+
+        return OrderResponseDTO.fromEntity(newOrder);
+    }
+
+
 }

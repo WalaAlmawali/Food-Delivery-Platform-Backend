@@ -74,7 +74,7 @@ public class DeliveryService {
             throw new InvalidRequestException("Order already has a delivery assigned");
         }
 
-        DeliveryDriver driver = deliveryDriverRepository.findFirstAvailableDriver()
+        DeliveryDriver driver = deliveryDriverRepository.findFirstAvailableDriver(DeliveryStatus.ASSIGNED)
                 .orElseThrow(() -> new InvalidRequestException("No available drivers right now"));
 
         Delivery delivery = new Delivery();

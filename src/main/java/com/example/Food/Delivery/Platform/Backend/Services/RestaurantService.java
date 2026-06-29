@@ -8,34 +8,34 @@ import com.example.Food.Delivery.Platform.Backend.DTO.Response.ComboMealResponse
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.MenuItemResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.RestaurantOwnerResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.RestaurantResponseDTO;
+import com.example.Food.Delivery.Platform.Backend.DTO.Summary.RestaurantAnalyticsDTO;
 import com.example.Food.Delivery.Platform.Backend.Entities.ComboMeal;
 import com.example.Food.Delivery.Platform.Backend.Entities.MenuItem;
 import com.example.Food.Delivery.Platform.Backend.Entities.Restaurant;
 import com.example.Food.Delivery.Platform.Backend.Entities.RestaurantOwner;
+import com.example.Food.Delivery.Platform.Backend.Enums.OrderStatus;
 import com.example.Food.Delivery.Platform.Backend.Exceptions.ResourceNotFoundException;
-import com.example.Food.Delivery.Platform.Backend.Repositories.ComboMealRepository;
-import com.example.Food.Delivery.Platform.Backend.Repositories.MenuItemRepository;
-import com.example.Food.Delivery.Platform.Backend.Repositories.RestaurantOwnerRepository;
-import com.example.Food.Delivery.Platform.Backend.Repositories.RestaurantRepository;
+import com.example.Food.Delivery.Platform.Backend.Repositories.*;
+import com.example.Food.Delivery.Platform.Backend.Utils.HelperUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantOwnerRepository ownerRepository;
     private final MenuItemRepository menuItemRepository;
     private final ComboMealRepository comboMealRepository;
+    private final OrderRepository orderRepository;
+    private final ReviewRepository reviewRepository;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantOwnerRepository ownerRepository, MenuItemRepository menuItemRepository, ComboMealRepository comboMealRepository) {
-        this.restaurantRepository = restaurantRepository;
-        this.ownerRepository = ownerRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.comboMealRepository = comboMealRepository;
-    }
+
 
     public RestaurantResponseDTO createRestaurant(RestaurantRequestDTO dto, Integer ownerId) {
 
@@ -199,6 +199,53 @@ public class RestaurantService {
         RestaurantOwner owner = RestaurantOwnerRequestDTO.toEntity(dto);
          ownerRepository.save(owner);
          return RestaurantOwnerResponseDTO.fromEntity(owner);
+    }
+
+    public List<RestaurantResponseDTO> getNearbyRestaurants(double lat, double lng, double radiusKm) {
+
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+
+        return restaurants.stream()
+                .filter(r -> r.getLatitude() != null && r.getLongitude() != null)
+                .filter(r -> {
+                    double distance = HelperUtils.calculateDistance(
+                            lat, lng,
+                            r.getLatitude(), r.getLongitude()
+                    );
+                    return distance <= radiusKm;
+                })
+                .map(RestaurantResponseDTO::fromEntity)
+                .toList();
+    }
+
+    public RestaurantAnalyticsDTO getAnalytics(Integer id) {
+
+        double avgRating = reviewRepository.averageRatingByRestaurant(id);
+
+        BigDecimal revenue = orderRepository.totalRevenueByRestaurant(id,OrderStatus.DELIVERED);
+
+        long completedOrders = orderRepository.countCompletedOrders(id, OrderStatus.DELIVERED);
+
+        RestaurantAnalyticsDTO dto = new RestaurantAnalyticsDTO();
+        dto.setAverageRating(avgRating);
+        dto.setTotalRevenue(revenue);
+        dto.setTotalCompletedOrders(completedOrders);
+
+        return dto;
+    }
+
+    public List<MenuItemResponseDTO> getTopSellingItems(Long id) {
+        return menuItemRepository.findTopSellingItems(id)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
+    }
+
+    public List<MenuItemResponseDTO> searchMenuItems(String keyword, Integer minCalories, Integer maxCalories) {
+        return menuItemRepository.searchMenuItems(keyword, minCalories, maxCalories)
+                .stream()
+                .map(MenuItemResponseDTO::fromEntity)
+                .toList();
     }
 
 }

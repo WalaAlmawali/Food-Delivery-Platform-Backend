@@ -3,17 +3,23 @@ package com.example.Food.Delivery.Platform.Backend.Services;
 import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerAddressRequestDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Request.CustomerRequestDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerAddressResponseDTO;
+import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerPatchDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.CustomerResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.DTO.Response.OrderResponseDTO;
 import com.example.Food.Delivery.Platform.Backend.Entities.Customer;
 import com.example.Food.Delivery.Platform.Backend.Entities.CustomerAddress;
 import com.example.Food.Delivery.Platform.Backend.Entities.Order;
+import com.example.Food.Delivery.Platform.Backend.Enums.DeliveryStatus;
 import com.example.Food.Delivery.Platform.Backend.Exceptions.ResourceNotFoundException;
 import com.example.Food.Delivery.Platform.Backend.Repositories.CustomerAddressRepository;
 import com.example.Food.Delivery.Platform.Backend.Repositories.CustomerRepository;
 import com.example.Food.Delivery.Platform.Backend.Repositories.OrderRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,5 +159,58 @@ public class CustomerService {
             customerOrderDTO.add(OrderResponseDTO.fromEntity(order));
         }
             return customerOrderDTO;
+    }
+
+    public Page<CustomerResponseDTO> searchCustomersByName(String name, Pageable pageable) {
+        return customerRepository
+                .searchByName(name, pageable)
+                .map(CustomerResponseDTO::fromEntity);
+    }
+
+    public Page<OrderResponseDTO> getCustomerOrders(
+            Long id,
+            String status,
+            LocalDate from,
+            LocalDate to,
+            Pageable pageable
+    ) {
+
+        DeliveryStatus deliveryStatus = null;
+
+        if (status != null && !status.isBlank()) {
+            deliveryStatus = DeliveryStatus.valueOf(status.toUpperCase());
+        }
+
+        return orderRepository
+                .findCustomerOrders(id, deliveryStatus, from, to, pageable)
+                .map(OrderResponseDTO::fromEntity);
+    }
+
+    @Transactional
+    public CustomerResponseDTO patchCustomer(Integer id, CustomerPatchDTO dto) {
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+
+        // PATCH logic (only update non-null fields)
+        if (dto.getFirstName() != null) {
+            customer.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null) {
+            customer.setLastName(dto.getLastName());
+        }
+
+        if (dto.getPhone() != null) {
+            customer.setPhone(dto.getPhone());
+        }
+
+        if (dto.getEmail() != null) {
+            customer.setEmail(dto.getEmail());
+        }
+
+         customerRepository.save(customer);
+
+        return CustomerResponseDTO.fromEntity(customer);
     }
 }
